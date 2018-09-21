@@ -6,6 +6,8 @@
 
 ![BigBrotherDesign](BigBrother.svg)
 
+[2rd RMS4A](https://github.com/williamfzc/RMS4A)
+
 ### 设备管理
 
 需要id、状态、机型信息等。
@@ -52,14 +54,14 @@
 
 ### 第一期 设备管理
 
-- [ ] slaver server
-    - 能够正常识别设备插拔
-    - 维持最新的设备列表
-    - 设备同步接口
+- slaver server
+    - [x] 能够正常识别设备插拔
+    - [x] 维持最新的设备列表
+    - [ ] 设备同步接口
 
-- [ ] server设备同步
-    - slaver ip记录
-    - 数据库关联
+- server设备同步
+    - [ ] slaver ip记录
+    - [ ] 数据库关联
 
 ### 第二期 任务
 
