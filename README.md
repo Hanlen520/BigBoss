@@ -48,6 +48,23 @@
 - 设备状态更新（是否被占用）
 - 任务状态更新（完成与否、执行情况）
 
+## 路线
+
+### 第一期 设备管理
+
+- [ ] slaver server
+    - 能够正常识别设备插拔
+    - 维持最新的设备列表
+    - 设备同步接口
+
+- [ ] server设备同步
+    - slaver ip记录
+    - 数据库关联
+
+### 第二期 任务
+
+TODO
+
 ## 依赖
 
 - [whenconnect](https://github.com/williamfzc/whenconnect)
