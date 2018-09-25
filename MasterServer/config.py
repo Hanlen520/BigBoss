@@ -8,6 +8,7 @@ class GlobalConf:
     PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 
     # SLAVER SETTING
+    # CONFIGURE SLAVER IP HERE
     SLAVER_PC_LIST = [
         # TEST ONLY
         '127.0.0.1',
