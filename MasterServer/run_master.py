@@ -12,7 +12,7 @@ from router import SLAVER_ROUTER
 def ping(delay):
     time.sleep(delay)
     response = requests.get(
-        url='http://localhost:{}'.format(GlobalConf.SLAVER_PORT),
+        url='http://localhost:{}'.format(GlobalConf.MASTER_PORT),
     )
     if response.ok:
         return
@@ -21,9 +21,9 @@ def ping(delay):
 
 if __name__ == "__main__":
     # stable check
-    logger.info('STARTING SLAVER ...')
+    logger.info('STARTING MASTER ...')
     threading.Thread(target=ping, args=(3,)).start()
 
-    application = Application(SLAVER_ROUTER, **GlobalConf.SLAVER_SETTING)
-    application.listen(GlobalConf.SLAVER_PORT, address='0.0.0.0')
+    application = Application(SLAVER_ROUTER, **GlobalConf.MASTER_SETTING)
+    application.listen(GlobalConf.MASTER_PORT, address='0.0.0.0')
     IOLoop.instance().start()
