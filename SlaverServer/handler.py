@@ -33,6 +33,13 @@ class BaseHandler(RequestHandler):
 class IndexHandler(BaseHandler):
     """ default """
 
-    def get(self):
+    def get(self, *args, **kwargs):
+        self.end_with_json(GlobalConf.RESULT_OK, message='SERVER ALIVE :)')
+
+
+class DeviceHandler(BaseHandler):
+    """ get current device list in this PC """
+
+    def get(self, *args, **kwargs):
         device_dict_json = {_: v.__dict__ for _, v in device_dict.items()}
-        self.end_with_json(GlobalConf.RESULT_OK, message='SERVER ALIVE :)', data=device_dict_json)
+        self.end_with_json(GlobalConf.RESULT_OK, data=device_dict_json)
