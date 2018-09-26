@@ -36,6 +36,10 @@ def turn_ip_into_url(ip_address, request_type=None):
     return result_url
 
 
+def turn_slaver_into_json(slaver_object):
+    return json.loads(str(slaver_object))
+
+
 def get_server_status(request_ip):
     """
     刷新单个server的状态
@@ -107,6 +111,7 @@ def sync_slaver_status():
 
 __all__ = [
     'turn_ip_into_url',
+    'turn_slaver_into_json',
 
     'get_connected_device',
     'get_server_status',

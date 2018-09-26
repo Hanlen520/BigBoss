@@ -46,7 +46,7 @@ class DeviceHandler(BaseHandler):
             device_result = get_connected_device(target_server_ip)
             self.end_with_json(GlobalConf.RESULT_OK, data=device_result)
             return
-        current_device_dict = {_: str(v) for _, v in sync_all_device().items()}
+        current_device_dict = {_: turn_slaver_into_json(v) for _, v in sync_all_device().items()}
         self.end_with_json(GlobalConf.RESULT_OK, data=current_device_dict)
 
 
