@@ -47,13 +47,16 @@ def get_server_status(request_ip):
     :return: if this url available
     """
     request_url = turn_ip_into_url(request_ip, 'status')
-    response = requests.get(request_url)
+    try:
+        response = requests.get(request_url, timeout=2)
+    except requests.ConnectionError:
+        return False
     server_status = response.ok
     if request_ip in CURRENT_SLAVER_DICT:
         CURRENT_SLAVER_DICT[request_ip].status = server_status
     else:
         CURRENT_SLAVER_DICT[request_ip] = SlaverServer(request_ip, server_status)
-    return str(CURRENT_SLAVER_DICT[request_ip])
+    return turn_slaver_into_json(CURRENT_SLAVER_DICT[request_ip])
 
 
 def get_connected_device(request_ip):
@@ -64,13 +67,16 @@ def get_connected_device(request_ip):
     :return:
     """
     request_url = turn_ip_into_url(request_ip, 'device')
-    response = requests.get(request_url)
+    try:
+        response = requests.get(request_url, timeout=2)
+    except requests.ConnectionError:
+        return False
     device_dict = json.loads(response.text)
     if request_ip in CURRENT_SLAVER_DICT:
         CURRENT_SLAVER_DICT[request_ip].device_dict = device_dict
     else:
         CURRENT_SLAVER_DICT[request_ip] = SlaverServer(request_ip, response.ok, device_dict)
-    return str(CURRENT_SLAVER_DICT[request_ip])
+    return turn_slaver_into_json(CURRENT_SLAVER_DICT[request_ip])
 
 
 def sync_all_device():
