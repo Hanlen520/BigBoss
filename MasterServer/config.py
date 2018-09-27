@@ -6,6 +6,7 @@ logger = structlog.get_logger()
 
 class GlobalConf:
     PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
+    SCRIPT_DIR_PATH = os.path.join(PROJECT_PATH, 'scripts')
 
     # SLAVER SETTING
     # CONFIGURE SLAVER IP HERE

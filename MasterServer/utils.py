@@ -1,6 +1,8 @@
 import requests
 import threading
 import json
+import os
+import uuid
 from config import *
 
 
@@ -25,7 +27,12 @@ URI_DICT = {
     'device': '/api/device/status',
     # server status, just confirm it is reachable
     'status': '/',
+    # exec script
+    'exec': '/api/script'
 }
+
+
+# --- tools ---
 
 
 def turn_ip_into_url(ip_address, request_type=None):
@@ -41,6 +48,21 @@ def turn_ip_into_url(ip_address, request_type=None):
 def turn_slaver_into_json(slaver_object):
     return json.loads(str(slaver_object))
 
+
+def get_script_content(script_name):
+    if script_name and script_name in os.listdir(GlobalConf.SCRIPT_DIR_PATH):
+        script_path = os.path.join(GlobalConf.SCRIPT_DIR_PATH, script_name)
+        with open(script_path, encoding='utf-8') as f:
+            script_content = f.read()
+        return script_content
+    return None
+
+
+def get_task_id():
+    return uuid.uuid1()
+
+
+# --- communication ---
 
 def get_server_status(request_ip):
     """
@@ -120,12 +142,44 @@ def sync_slaver_status():
     return CURRENT_SLAVER_DICT
 
 
+def exec_script(request_ip, script_name):
+    """
+    send script and run it on slaver server
+
+    :param request_ip:
+    :param script_name:
+    :return:
+    """
+    script_content = get_script_content(script_name)
+    if not script_content:
+        logger.warn('NO SCRIPT')
+        return False
+    request_url = turn_ip_into_url(request_ip, 'exec')
+    try:
+        response = requests.get(request_url, {
+            'task_id': get_task_id(),
+            'script_content': script_content,
+        }, timeout=5)
+    except requests.ConnectionError:
+        logger.info('CONNECTION FAILED', ip=request_ip)
+        del CURRENT_SLAVER_DICT[request_ip]
+        return False
+    # exec_result = json.loads(response.text)
+    exec_result = response.text
+    # if 'result' in exec_result and exec_result['result'] == 'ok':
+    #     return True
+    # return False
+    return exec_result
+
+
 __all__ = [
     'turn_ip_into_url',
     'turn_slaver_into_json',
+    'get_script_content',
 
     'get_connected_device',
     'get_server_status',
     'sync_slaver_status',
     'sync_all_device',
+    'exec_script',
 ]

@@ -1,6 +1,7 @@
 from tornado.web import RequestHandler
 from config import *
 from utils import *
+import os
 
 
 class BaseHandler(RequestHandler):
@@ -54,3 +55,15 @@ class SlaverServerHandler(BaseHandler):
             return
         current_slaver_dict = {_: turn_slaver_into_json(v) for _, v in sync_slaver_status().items()}
         self.end_with_json(GlobalConf.RESULT_OK, data=current_slaver_dict)
+
+
+class TaskHandler(BaseHandler):
+    """ send task (runnable python script) to slaver """
+
+    # TODO: should be POST?
+    def get(self, *args, **kwargs):
+        script_name = self.get_argument('script_name', default=None)
+        target_server_ip = self.get_argument('target_ip', default=None)
+
+        exec_result = exec_script(target_server_ip, script_name)
+        self.end_with_json(GlobalConf.RESULT_OK, data=exec_result)
