@@ -27,7 +27,7 @@
 
 - server与device
     - `whenconnect`
-    - `aqube`
+    - `adb`
 
 ### 任务管理
 
@@ -64,14 +64,17 @@
 
 ### 第二期 任务
 
-- [ ] 远程设备操作（关联AQube）
+- slaver server
+    - [ ] 设备操作
+
+- [ ] 任务发布
 
 ## 依赖
 
+- [tornado](https://github.com/tornadoweb/tornado)
+- [requests](https://github.com/requests/requests)
 - [whenconnect](https://github.com/williamfzc/whenconnect)
     - 用于即时设备管理
-- [aqube](https://github.com/williamfzc/AQube_Core)
-    - 用于设备操作
 
 ## 协议
 
