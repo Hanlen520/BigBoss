@@ -5,13 +5,6 @@ from device import *
 
 
 class BaseHandler(RequestHandler):
-    def set_default_headers(self):
-        self.set_header('Access-Control-Allow-Origin', '*')
-        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
-        self.set_header('Access-Control-Max-Age', 1000)
-        self.set_header('Access-Control-Allow-Headers', '*')
-        self.set_header('Content-type', 'application/json')
-
     def end_with_json(self, code, data=None, message=None):
         request_url = self.request.uri
         result_dict = {
