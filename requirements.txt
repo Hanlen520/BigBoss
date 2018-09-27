@@ -1,5 +1,4 @@
 requests
 tornado
 structlog
-aqube
 whenconnect

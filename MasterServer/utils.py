@@ -21,7 +21,9 @@ CURRENT_SLAVER_DICT = {
 }
 
 URI_DICT = {
-    'device': '/api/device',
+    # android device status
+    'device': '/api/device/status',
+    # server status, just confirm it is reachable
     'status': '/',
 }
 
@@ -71,7 +73,8 @@ def get_connected_device(request_ip):
     try:
         response = requests.get(request_url, timeout=2)
     except requests.ConnectionError:
-        del CURRENT_SLAVER_DICT[request_ip]
+        if request_ip in CURRENT_SLAVER_DICT:
+            del CURRENT_SLAVER_DICT[request_ip]
         return False
     device_dict = json.loads(response.text)
     if request_ip in CURRENT_SLAVER_DICT:

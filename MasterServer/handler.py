@@ -59,5 +59,5 @@ class SlaverServerHandler(BaseHandler):
             server_result = get_server_status(target_server_ip)
             self.end_with_json(GlobalConf.RESULT_OK, data=server_result)
             return
-        current_slaver_dict = {_: str(v) for _, v in sync_slaver_status().items()}
+        current_slaver_dict = {_: turn_slaver_into_json(v) for _, v in sync_slaver_status().items()}
         self.end_with_json(GlobalConf.RESULT_OK, data=current_slaver_dict)

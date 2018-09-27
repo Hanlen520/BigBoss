@@ -1,6 +1,7 @@
 from tornado.web import RequestHandler
 from config import *
 from scanner import device_dict
+from device import *
 
 
 class BaseHandler(RequestHandler):
@@ -37,9 +38,24 @@ class IndexHandler(BaseHandler):
         self.end_with_json(GlobalConf.RESULT_OK, message='SERVER ALIVE :)')
 
 
-class DeviceHandler(BaseHandler):
+class DeviceStatusHandler(BaseHandler):
     """ get current device list in this PC """
 
     def get(self, *args, **kwargs):
         device_dict_json = {_: v.__dict__ for _, v in device_dict.items()}
         self.end_with_json(GlobalConf.RESULT_OK, data=device_dict_json)
+
+
+class DeviceCommandHandler(BaseHandler):
+    """ apply command on devices """
+
+    def get(self, *args, **kwargs):
+        cmd_str = self.get_argument('adb_cmd', default=None)
+        if cmd_str:
+            device = self.get_argument('device', default=None)
+            on_shell = self.get_argument('shell', default=None)
+            cmd_list = cmd_str.split(' ')
+            exec_result = exec_adb_cmd(cmd_list, device, on_shell)
+            self.end_with_json(GlobalConf.RESULT_OK, data=exec_result)
+            return
+        self.end_with_json(GlobalConf.RESULT_ERROR, message='invalid args')
