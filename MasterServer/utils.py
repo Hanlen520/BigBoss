@@ -18,8 +18,20 @@ class SlaverServer(object):
     __repr__ = __str__
 
 
+# TODO 与device的关联
+class Task(object):
+    def __init__(self, task_id, ip, status):
+        self.task_id = task_id
+        self.ip = ip
+        self.status = status
+
+
 CURRENT_SLAVER_DICT = {
     # ip: SlaverServer Object
+}
+
+TASK_STATUS_DICT = {
+    # task id: status
 }
 
 URI_DICT = {
@@ -155,20 +167,25 @@ def exec_script(request_ip, script_name):
         logger.warn('NO SCRIPT')
         return False
     request_url = turn_ip_into_url(request_ip, 'exec')
+
+    # save task
+    task_id = get_task_id()
+
     try:
         response = requests.get(request_url, {
-            'task_id': get_task_id(),
+            'task_id': task_id,
             'script_content': script_content,
         }, timeout=5)
     except requests.ConnectionError:
         logger.info('CONNECTION FAILED', ip=request_ip)
         del CURRENT_SLAVER_DICT[request_ip]
         return False
-    # exec_result = json.loads(response.text)
     exec_result = response.text
-    # if 'result' in exec_result and exec_result['result'] == 'ok':
-    #     return True
-    # return False
+    # TODO: use json rather than str
+    # TODO: different status
+    if 'running' in exec_result:
+        TASK_STATUS_DICT[task_id] = Task(task_id, request_ip, 'running')
+
     return exec_result
 
 

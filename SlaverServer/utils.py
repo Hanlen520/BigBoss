@@ -1,6 +1,5 @@
 import subprocess
 import threading
-import time
 
 
 TASK_DICT = {
@@ -13,7 +12,6 @@ def run_script(task_id, script_path):
     script_process = subprocess.Popen(run_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     TASK_DICT[task_id] = script_process
 
-    time.sleep(1)
     if script_process.poll() is not None:
         result, _ = script_process.communicate()
         del TASK_DICT[task_id]
@@ -30,10 +28,8 @@ def check_task_dict():
             if each_process.poll() is not None:
                 print(each_process.stdout.read())
                 need_remove.append(each_task_name)
-        print(need_remove)
         for each_finished_task in need_remove:
             del TASK_DICT[each_finished_task]
-        time.sleep(1)
 
 
 threading.Thread(target=check_task_dict).start()

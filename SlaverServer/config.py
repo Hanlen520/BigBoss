@@ -7,6 +7,9 @@ logger = structlog.get_logger()
 class GlobalConf:
     PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 
+    # TEMP FILES ( some error happened when using module 'tempfile', in windows
+    TEMP_PY_FILE = os.path.join(PROJECT_PATH, '_temp.py')
+
     # SERVER SETTING
     SLAVER_SETTING = {
         'debug': True,

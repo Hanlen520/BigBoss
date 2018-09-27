@@ -3,7 +3,6 @@ from config import *
 from utils import *
 from scanner import device_dict
 from device import *
-from tempfile import TemporaryFile
 
 
 class BaseHandler(RequestHandler):
@@ -62,10 +61,12 @@ class ScriptHandler(BaseHandler):
     def get(self, *args, **kwargs):
         task_id = self.get_argument('task_id', default=None)
         script_content = self.get_argument('script_content', default=None)
-        with TemporaryFile('w+t') as f:
+        with open(GlobalConf.TEMP_PY_FILE, 'w+') as f:
             f.write(script_content)
-            start_failed = run_script(task_id, f)
-            if start_failed:
-                self.end_with_json(GlobalConf.RESULT_ERROR, message=start_failed)
-            else:
-                self.end_with_json(GlobalConf.RESULT_OK, message='started')
+            f.flush()
+        start_failed = run_script(task_id, GlobalConf.TEMP_PY_FILE)
+        # TODO 规范返回类型
+        if start_failed:
+            self.end_with_json(GlobalConf.RESULT_ERROR, message=start_failed)
+        else:
+            self.end_with_json(GlobalConf.RESULT_OK, message='running')
