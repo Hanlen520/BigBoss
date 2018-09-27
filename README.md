@@ -1,10 +1,10 @@
-# BigBrother
+# BigBoss
 
-> Big brother is watching your android.
+> BigBoss is watching your android.
 
 ## 设计
 
-![BigBrotherDesign](BigBrother.svg)
+![BigBossDesign](BigBoss.svg)
 
 [2rd RMS4A](https://github.com/williamfzc/RMS4A)
 
