@@ -50,6 +50,7 @@ def get_server_status(request_ip):
     try:
         response = requests.get(request_url, timeout=2)
     except requests.ConnectionError:
+        del CURRENT_SLAVER_DICT[request_ip]
         return False
     server_status = response.ok
     if request_ip in CURRENT_SLAVER_DICT:
@@ -70,6 +71,7 @@ def get_connected_device(request_ip):
     try:
         response = requests.get(request_url, timeout=2)
     except requests.ConnectionError:
+        del CURRENT_SLAVER_DICT[request_ip]
         return False
     device_dict = json.loads(response.text)
     if request_ip in CURRENT_SLAVER_DICT:
