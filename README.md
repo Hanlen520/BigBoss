@@ -10,20 +10,42 @@
 
 ### 设备管理
 
-需要id、状态、机型信息等。
+- id、状态、机型信息
+- slaver各自管理连接到自身的设备，并提供API供master调用
+- master通过遍历slaver list得到总体的连接状况
 
-- slaver名下
-    - json
-
-- master
-    - 收集各slaver的连接状态
-    - 以数据库形式管理
+```
+{
+    "code": 1000,
+    "data": {
+        "123.456.789.123": {
+            "ip": "123.456.789.123",
+            "status": true,
+            "device_dict": {
+                "code": 1000,
+                "data": {
+                    "123456F": {
+                        "device_id": "123456F",
+                        "device_status": "FREE",
+                        "device_info": {
+                            "device_name": "TEST ONLY"
+                        }
+                    },
+                },
+                "message": {}
+            }
+        }
+    },
+    "message": {}
+}
+```
 
 ### 通信
 
-- server之间
-    - restful
-    - json
+- slaver 与 master
+    - master通过slaver暴露的restful API进行调用
+        - 即时性的行为通过response直接反馈给master
+        - 延时性的行为通过master的private API进行反馈
 
 - server与device
     - `whenconnect`
@@ -57,10 +79,8 @@
 
 ### 第二期 任务
 
-- slaver server
-    - [ ] 设备操作
-
-- [ ] 任务发布
+- [x] Python脚本分发与执行
+- [ ] 任务流程管理与同步
 
 ## 依赖
 
