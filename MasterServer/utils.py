@@ -32,6 +32,7 @@ CURRENT_SLAVER_DICT = {
 
 TASK_STATUS_DICT = {
     # task id: status
+    # status should be 'running' or 'done'
 }
 
 URI_DICT = {
@@ -71,7 +72,7 @@ def get_script_content(script_name):
 
 
 def get_task_id():
-    return uuid.uuid1()
+    return uuid.uuid1().int
 
 
 # --- communication ---
@@ -105,7 +106,7 @@ def get_connected_device(request_ip):
     """
     request_url = turn_ip_into_url(request_ip, 'device')
     try:
-        response = requests.get(request_url, timeout=2)
+        response = requests.get(request_url, timeout=5)
     except requests.ConnectionError:
         if request_ip in CURRENT_SLAVER_DICT:
             del CURRENT_SLAVER_DICT[request_ip]
@@ -172,10 +173,14 @@ def exec_script(request_ip, script_name):
     task_id = get_task_id()
 
     try:
-        response = requests.get(request_url, {
-            'task_id': task_id,
-            'script_content': script_content,
-        }, timeout=5)
+        response = requests.get(
+            request_url,
+            params={
+                'task_id': task_id,
+                'script_content': script_content,
+            },
+            timeout=5
+        )
     except requests.ConnectionError:
         logger.info('CONNECTION FAILED', ip=request_ip)
         del CURRENT_SLAVER_DICT[request_ip]
@@ -186,13 +191,20 @@ def exec_script(request_ip, script_name):
     if 'running' in exec_result:
         TASK_STATUS_DICT[task_id] = Task(task_id, request_ip, 'running')
 
-    return exec_result
+    return task_id, exec_result
+
+
+def get_task_status(task_id):
+    if task_id in TASK_STATUS_DICT:
+        return TASK_STATUS_DICT[task_id].status
+    return None
 
 
 __all__ = [
     'turn_ip_into_url',
     'turn_slaver_into_json',
     'get_script_content',
+    'get_task_status',
 
     'get_connected_device',
     'get_server_status',

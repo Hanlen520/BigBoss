@@ -1,7 +1,6 @@
 from tornado.web import RequestHandler
 from config import *
 from utils import *
-import os
 
 
 class BaseHandler(RequestHandler):
@@ -59,11 +58,25 @@ class SlaverServerHandler(BaseHandler):
 
 class TaskHandler(BaseHandler):
     """ send task (runnable python script) to slaver """
+    # TODO unittest
 
-    # TODO: should be POST?
     def get(self, *args, **kwargs):
+        """ get task status """
+        task_id = self.get_argument('task_id', default='INVALID_TASK_ID')
+        task_status = get_task_status(task_id)
+        if task_status:
+            self.end_with_json(GlobalConf.RESULT_OK, data=task_status)
+            return
+        self.end_with_json(GlobalConf.RESULT_ERROR, message='task id not found')
+
+    def post(self, *args, **kwargs):
+        """ new task and run """
         script_name = self.get_argument('script_name', default=None)
         target_server_ip = self.get_argument('target_ip', default=None)
 
-        exec_result = exec_script(target_server_ip, script_name)
-        self.end_with_json(GlobalConf.RESULT_OK, data=exec_result)
+        task_id, exec_result = exec_script(target_server_ip, script_name)
+        result_dict = {
+            'result': exec_result,
+            'task_id': task_id,
+        }
+        self.end_with_json(GlobalConf.RESULT_OK, data=result_dict)
