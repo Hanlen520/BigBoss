@@ -70,3 +70,9 @@ class ScriptHandler(BaseHandler):
             self.end_with_json(GlobalConf.RESULT_ERROR, message=start_failed)
         else:
             self.end_with_json(GlobalConf.RESULT_OK, message='running')
+
+
+class ConfHandler(BaseHandler):
+    """ update conf """
+
+    # TODO 根据参数修改配置

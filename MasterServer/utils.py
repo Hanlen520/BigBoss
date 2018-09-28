@@ -20,10 +20,11 @@ class SlaverServer(object):
 
 # TODO 与device的关联
 class Task(object):
-    def __init__(self, task_id, ip, status):
+    def __init__(self, task_id, ip, status, exec_result=None):
         self.task_id = task_id
         self.ip = ip
         self.status = status
+        self.exec_result = exec_result
 
 
 CURRENT_SLAVER_DICT = {
@@ -46,6 +47,13 @@ URI_DICT = {
 
 
 # --- tools ---
+
+def set_task_status(task_id, exec_result, status):
+    if task_id in TASK_STATUS_DICT:
+        TASK_STATUS_DICT[task_id].exec_result = exec_result
+        TASK_STATUS_DICT[task_id].status = status
+        return True
+    return False
 
 
 def turn_ip_into_url(ip_address, request_type=None):
@@ -72,7 +80,7 @@ def get_script_content(script_name):
 
 
 def get_task_id():
-    return uuid.uuid1().int
+    return str(uuid.uuid1().int)
 
 
 # --- communication ---
@@ -195,6 +203,7 @@ def exec_script(request_ip, script_name):
 
 
 def get_task_status(task_id):
+    print(TASK_STATUS_DICT)
     if task_id in TASK_STATUS_DICT:
         return TASK_STATUS_DICT[task_id].status
     return None
@@ -205,6 +214,7 @@ __all__ = [
     'turn_slaver_into_json',
     'get_script_content',
     'get_task_status',
+    'set_task_status',
 
     'get_connected_device',
     'get_server_status',

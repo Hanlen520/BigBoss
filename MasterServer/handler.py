@@ -58,7 +58,6 @@ class SlaverServerHandler(BaseHandler):
 
 class TaskHandler(BaseHandler):
     """ send task (runnable python script) to slaver """
-    # TODO unittest
 
     def get(self, *args, **kwargs):
         """ get task status """
@@ -80,3 +79,19 @@ class TaskHandler(BaseHandler):
             'task_id': task_id,
         }
         self.end_with_json(GlobalConf.RESULT_OK, data=result_dict)
+
+
+class Private_TaskHandler(BaseHandler):
+    """ private usage, for sync task status between slaver and master """
+
+    def post(self, *args, **kwargs):
+        """ update task status """
+        task_id = self.get_argument('task_id', default='INVALID_TASK_ID')
+        exec_result = self.get_argument('exec_result', default='')
+        status = self.get_argument('status', default=None)
+        set_result = set_task_status(task_id, exec_result, status)
+        if set_result:
+            self.end_with_json(GlobalConf.RESULT_OK, message='ok')
+        else:
+            self.end_with_json(GlobalConf.RESULT_ERROR, message='failed')
+        print(get_task_status(task_id))

@@ -18,6 +18,10 @@ class GlobalConf:
     }
     SLAVER_PORT = 9410
 
+    # MASTER SERVER SETTING ( can be overwrite by API )
+    MASTER_IP = '127.0.0.1'
+    MASTER_PORT = 9507
+
     # STATUS
     RESULT_OK = 1000
     RESULT_ERROR = 1001

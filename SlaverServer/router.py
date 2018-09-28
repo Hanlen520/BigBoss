@@ -6,4 +6,5 @@ SLAVER_ROUTER = [
     (r"/api/device/status", DeviceStatusHandler),
     (r"/api/device/command", DeviceCommandHandler),
     (r"/api/script", ScriptHandler),
+    (r"/api/configure", ConfHandler),
 ]
