@@ -16,7 +16,7 @@ class BaseHandler(RequestHandler):
         # RESULT_DICT 在linux上偶现问题，属于structlog的原生问题
         # logger.info('REQUEST END', request_url=request_url, **result_dict)
 
-        logger.info('REQUEST END', request_url=request_url)
+        logger.info('REQUEST END', request_url=request_url, **result_dict)
         self.finish(result_dict)
 
     def options(self):
@@ -65,7 +65,7 @@ class ScriptHandler(BaseHandler):
             f.write(script_content)
             f.flush()
         start_failed = run_script(task_id, GlobalConf.TEMP_PY_FILE)
-        # TODO 规范返回类型
+        # TODO 规范返回
         if start_failed:
             self.end_with_json(GlobalConf.RESULT_ERROR, message=start_failed)
         else:

@@ -1,6 +1,5 @@
 import requests
 
-
 # 本机测试
 base_master_url = 'http://127.0.0.1:9507'
 base_slaver_ip = '127.0.0.1'
@@ -41,8 +40,9 @@ def test_all_server_status():
 
 def test_exec_py():
     target_url = base_master_url + '/api/task'
-    resp = requests.get(target_url, {
-        'script_name': 'hello.py',
+    resp = requests.post(target_url, {
+        'script_name': 'hello_for_10s.py',
         'target_ip': base_slaver_ip,
     })
     assert resp.ok
+    assert 'running' in resp.text
