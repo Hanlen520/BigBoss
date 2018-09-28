@@ -1,6 +1,5 @@
 from handler import *
 
-
 MASTER_ROUTER = [
     (r"/", IndexHandler),
     # connected devices

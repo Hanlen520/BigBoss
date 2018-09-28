@@ -15,9 +15,8 @@ class GlobalConf:
         '127.0.0.1',
 
         # and so on
-        '172.17.156.209',
     ]
-    SLAVER_PORT = 9595
+    SLAVER_PORT = 9410
 
     # MASTER SETTING
     MASTER_SETTING = {
