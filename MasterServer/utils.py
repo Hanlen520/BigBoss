@@ -20,21 +20,55 @@ class SlaverServer(object):
 
 # TODO 与device的关联
 class Task(object):
-    def __init__(self, task_id, ip, status, exec_result=None):
-        self.task_id = task_id
+    def __init__(self, ip, status, exec_result=None):
+        self.task_id = self._create_task_id()
         self.ip = ip
         self.status = status
         self.exec_result = exec_result
+
+    @staticmethod
+    def _create_task_id():
+        return str(uuid.uuid1().int)
+
+
+class TaskManager(object):
+    _task_status_dict = {
+        # task id: status
+        # status should be 'running' or 'done'
+    }
+
+    @classmethod
+    def get(cls, task_id):
+        if task_id in cls._task_status_dict:
+            return cls._task_status_dict[task_id]
+        return None
+
+    @classmethod
+    def update(cls, task_id, exec_result, status):
+        if task_id in cls._task_status_dict:
+            cls._task_status_dict[task_id].exec_result = exec_result
+            cls._task_status_dict[task_id].status = status
+            return True
+        return False
+
+    @classmethod
+    def add(cls, task_obj):
+        task_id = task_obj.task_id
+        cls._task_status_dict[task_id] = task_obj
+        return task_id
+
+    @classmethod
+    def remove(cls, task_id):
+        if task_id in cls._task_status_dict:
+            del cls._task_status_dict[task_id]
+            return True
+        return False
 
 
 CURRENT_SLAVER_DICT = {
     # ip: SlaverServer Object
 }
 
-TASK_STATUS_DICT = {
-    # task id: status
-    # status should be 'running' or 'done'
-}
 
 URI_DICT = {
     # android device status
@@ -47,13 +81,6 @@ URI_DICT = {
 
 
 # --- tools ---
-
-def set_task_status(task_id, exec_result, status):
-    if task_id in TASK_STATUS_DICT:
-        TASK_STATUS_DICT[task_id].exec_result = exec_result
-        TASK_STATUS_DICT[task_id].status = status
-        return True
-    return False
 
 
 def turn_ip_into_url(ip_address, request_type=None):
@@ -77,10 +104,6 @@ def get_script_content(script_name):
             script_content = f.read()
         return script_content
     return None
-
-
-def get_task_id():
-    return str(uuid.uuid1().int)
 
 
 # --- communication ---
@@ -177,8 +200,10 @@ def exec_script(request_ip, script_name):
         return False
     request_url = turn_ip_into_url(request_ip, 'exec')
 
-    # save task
-    task_id = get_task_id()
+    # register
+    task_obj = Task(request_ip, 'running')
+    TaskManager.add(task_obj)
+    task_id = task_obj.task_id
 
     try:
         response = requests.get(
@@ -194,27 +219,15 @@ def exec_script(request_ip, script_name):
         del CURRENT_SLAVER_DICT[request_ip]
         return False
     exec_result = response.text
-    # TODO: use json rather than str
-    # TODO: different status
-    if 'running' in exec_result:
-        TASK_STATUS_DICT[task_id] = Task(task_id, request_ip, 'running')
 
     return task_id, exec_result
-
-
-def get_task_status(task_id):
-    print(TASK_STATUS_DICT)
-    if task_id in TASK_STATUS_DICT:
-        return TASK_STATUS_DICT[task_id].status
-    return None
 
 
 __all__ = [
     'turn_ip_into_url',
     'turn_slaver_into_json',
     'get_script_content',
-    'get_task_status',
-    'set_task_status',
+    'TaskManager',
 
     'get_connected_device',
     'get_server_status',

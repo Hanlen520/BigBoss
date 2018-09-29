@@ -62,9 +62,9 @@ class TaskHandler(BaseHandler):
     def get(self, *args, **kwargs):
         """ get task status """
         task_id = self.get_argument('task_id', default='INVALID_TASK_ID')
-        task_status = get_task_status(task_id)
-        if task_status:
-            self.end_with_json(GlobalConf.RESULT_OK, data=task_status)
+        task_obj = TaskManager.get(task_id)
+        if task_obj:
+            self.end_with_json(GlobalConf.RESULT_OK, data=task_obj.status)
             return
         self.end_with_json(GlobalConf.RESULT_ERROR, message='task id not found')
 
@@ -89,9 +89,8 @@ class Private_TaskHandler(BaseHandler):
         task_id = self.get_argument('task_id', default='INVALID_TASK_ID')
         exec_result = self.get_argument('exec_result', default='')
         status = self.get_argument('status', default=None)
-        set_result = set_task_status(task_id, exec_result, status)
+        set_result = TaskManager.update(task_id, exec_result, status)
         if set_result:
             self.end_with_json(GlobalConf.RESULT_OK, message='ok')
         else:
             self.end_with_json(GlobalConf.RESULT_ERROR, message='failed')
-        print(get_task_status(task_id))
