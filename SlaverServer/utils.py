@@ -1,12 +1,22 @@
 import subprocess
 import threading
 import requests
+import os
 from config import *
 
 
 TASK_DICT = {
     # task id : process
 }
+
+
+def write_script(task_id, script_content):
+    os.makedirs(GlobalConf.TEMP_DIR, exist_ok=True)
+    target_temp_file = os.path.join(GlobalConf.TEMP_DIR, task_id + '.py')
+    with open(target_temp_file, 'w+') as f:
+        f.write(script_content)
+        f.flush()
+    return target_temp_file
 
 
 def run_script(task_id, script_path):
@@ -49,4 +59,5 @@ threading.Thread(target=check_task_dict).start()
 
 __all__ = [
     'run_script',
+    'write_script',
 ]

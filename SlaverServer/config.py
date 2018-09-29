@@ -8,7 +8,7 @@ class GlobalConf:
     PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 
     # TEMP FILES ( some error happened when using module 'tempfile', in windows
-    TEMP_PY_FILE = os.path.join(PROJECT_PATH, '_temp.py')
+    TEMP_DIR = os.path.join(PROJECT_PATH, 'temp')
 
     # SERVER SETTING
     SLAVER_SETTING = {

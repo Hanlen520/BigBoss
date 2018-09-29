@@ -61,10 +61,8 @@ class ScriptHandler(BaseHandler):
     def get(self, *args, **kwargs):
         task_id = self.get_argument('task_id', default=None)
         script_content = self.get_argument('script_content', default=None)
-        with open(GlobalConf.TEMP_PY_FILE, 'w+') as f:
-            f.write(script_content)
-            f.flush()
-        start_failed = run_script(task_id, GlobalConf.TEMP_PY_FILE)
+        temp_python_file_path = write_script(task_id, script_content)
+        start_failed = run_script(task_id, temp_python_file_path)
         # TODO 规范返回
         if start_failed:
             self.end_with_json(GlobalConf.RESULT_ERROR, message=start_failed)
