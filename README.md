@@ -1,5 +1,7 @@
 # BigBoss
 
+[![codebeat badge](https://codebeat.co/badges/34b9a611-3fbf-4f91-89d4-ff2dd1d9726f)](https://codebeat.co/projects/github-com-williamfzc-bigbrother-master)
+
 > BigBoss is watching your android.
 
 ## 设计
