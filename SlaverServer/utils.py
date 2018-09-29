@@ -27,8 +27,7 @@ def run_script(task_id, script_path):
     if script_process.poll() is not None:
         result, _ = script_process.communicate()
         del TASK_DICT[task_id]
-        print('delete task {}'.format(task_id))
-        return result
+        return result.read().decode()
     # is running
     return None
 

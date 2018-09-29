@@ -63,11 +63,17 @@ class ScriptHandler(BaseHandler):
         script_content = self.get_argument('script_content', default=None)
         temp_python_file_path = write_script(task_id, script_content)
         start_failed = run_script(task_id, temp_python_file_path)
-        # TODO 规范返回
+
+        return_dict = {
+            'task_id': task_id,
+            'status': 'running',
+        }
         if start_failed:
-            self.end_with_json(GlobalConf.RESULT_ERROR, message=start_failed)
+            return_dict['status'] = 'done'
+            return_dict['error'] = start_failed
+            self.end_with_json(GlobalConf.RESULT_ERROR, message='stopped', data=return_dict)
         else:
-            self.end_with_json(GlobalConf.RESULT_OK, message='running')
+            self.end_with_json(GlobalConf.RESULT_OK, message='running', data=return_dict)
 
 
 class ConfHandler(BaseHandler):

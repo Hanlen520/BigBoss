@@ -218,7 +218,7 @@ def exec_script(request_ip, script_name):
         logger.info('CONNECTION FAILED', ip=request_ip)
         del CURRENT_SLAVER_DICT[request_ip]
         return False
-    exec_result = response.text
+    exec_result = json.loads(response.text)
 
     return task_id, exec_result
 
